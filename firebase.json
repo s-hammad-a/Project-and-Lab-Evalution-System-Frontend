@@ -1,0 +1,15 @@
+{
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "appAssociation": "AUTO",
+    "rewrites": [ {
+      "source": "/api/v1/**",
+      "dynamicLinks": true
+    } ]
+  }
+}
