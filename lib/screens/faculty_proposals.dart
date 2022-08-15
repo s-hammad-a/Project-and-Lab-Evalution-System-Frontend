@@ -18,6 +18,9 @@ class FacultyProposals extends StatefulWidget {
 }
 
 class _FacultyProposalsState extends State<FacultyProposals> {
+  //String server = "localhost:5000";
+  //String server = "pesbuic.herokuapp.com";
+  String server = "projectandlabevaluation.herokuapp.com";
   @override
   Widget build(BuildContext context) {
     List<Map> data = <Map>[];
@@ -91,9 +94,8 @@ class _FacultyProposalsState extends State<FacultyProposals> {
             child: Text(
               getText(index),
               style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight
-                    .bold,
+                fontSize: 17,
+                //fontWeight: FontWeight.bold,
                 color: Colors
                     .black,
               ),
@@ -105,8 +107,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                 StorageManager sm = StorageManager();
                 String? location = await sm.uploadFile();
                 await put(Uri.parse(
-                    "http://pesbuic.herokuapp.com/api/v1/proposal/uploadproposal/$projectId/${index +
-                        1}"),
+                    "http://$server/api/v1/proposal/uploadproposal/$projectId/${index + 1}"),
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },
@@ -120,7 +121,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
               }
               else if(getText(index) == 'Delete') {
                 await put(Uri.parse(
-                    "http://pesbuic.herokuapp.com/api/v1/proposal/uploadproposal/$projectId/${index +
+                    "http://$server/api/v1/proposal/uploadproposal/$projectId/${index +
                         1}"),
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
@@ -143,7 +144,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
     }
 
     Future<void> getAllCourses() async {
-      Response response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/proposal/$projectId"));
+      Response response = await get(Uri.parse("http://$server/api/v1/proposal/$projectId"));
       String res = response.body.substring(1,response.body.length-2);
       List<String> allData = res.split('},');
       //print(allData);
@@ -170,7 +171,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
           itemBuilder: (context, index) {
             Color color;
             Color color2;
-            if(data[index]['proposal_file'] != null) {
+            if(data[index]['proposal_file'] == null) {
               color = Colors.grey.shade300;
             }
             else {
@@ -192,7 +193,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
               child: Container(
                   decoration: BoxDecoration(
                       color: color2,
-                      border: Border.all(color: Colors.black87),
+                      border: Border.all(color: color2 == Colors.lightGreen.shade300 ? Colors.lightGreen.shade300 : Colors.red.shade400),
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: const [
                         BoxShadow(
@@ -226,8 +227,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                                   fontSize: 20,
                                   color: Colors
                                       .black,
-                                  fontWeight: FontWeight
-                                      .bold,
+                                  //fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign
                                     .left,
@@ -239,7 +239,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                               child: TextFormField(
                                 readOnly: student,
                                 onEditingComplete: () async {
-                                  await put(Uri.parse("http://pesbuic.herokuapp.com/api/v1/proposal/addcomment/$projectId/${index+1}"),
+                                  await put(Uri.parse("http://$server/api/v1/proposal/addcomment/$projectId/${index+1}"),
                                     headers: <String, String>{
                                       'Content-Type': 'application/json; charset=UTF-8',
                                     },
@@ -290,14 +290,14 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                                       Icons
                                           .download_rounded,
                                       color: Colors
-                                          .black87,
+                                          .black,
+                                      size: 20,
                                     ),
                                     Text(
                                       'Proposal File',
                                       style: TextStyle(
                                         fontSize: 15,
-                                        fontWeight: FontWeight
-                                            .bold,
+                                        //fontWeight: FontWeight.bold,
                                         color: Colors
                                             .black,
                                       ),
@@ -373,7 +373,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                                   onPressed: () async {
                                     if(!student) {
                                       picked[index] = (await ScreenElements().selectDate(context, picked[index]))!;
-                                      await put(Uri.parse("http://pesbuic.herokuapp.com/api/v1/proposal/changedeadline/$projectId/${index+1}"),
+                                      await put(Uri.parse("http://$server/api/v1/proposal/changedeadline/$projectId/${index+1}"),
                                         headers: <String, String>{
                                           'Content-Type': 'application/json; charset=UTF-8',
                                         },
@@ -478,14 +478,64 @@ class _FacultyProposalsState extends State<FacultyProposals> {
 
     Widget topStrip() {
       if(student) {
-        return Text(
-          projectName,
-          style: const TextStyle(
-            fontSize: 30,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.left,
+        return Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                projectName,
+                style: const TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+               fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            const Expanded(child: SizedBox.shrink()),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: FlatButton(
+                shape: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.lightGreen.shade500, width: 1.0),
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                ),
+                color: Colors.lightGreen.shade400,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment
+                      .end,
+                  children: const [
+                    Text(
+                      'Add new Proposal',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                        //fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Icon(
+                      Icons.update,
+                    ),
+                  ],
+                ),
+                onPressed: () async {
+                  await post(Uri.parse("http://$server/api/v1/proposal/"),
+                      headers: <String, String>{
+                        'Content-Type': 'application/json; charset=UTF-8',
+                      },
+                      body: jsonEncode(<String, dynamic>{
+                        'proposal_id': data.length+1,
+                        'project_id' : projectId,
+                        'deadline': DateTime.now().toString(),
+                      }));
+                  setState(() {
+
+                  });
+                },
+              ),
+            ),
+          ],
         );
       }
       else {
@@ -506,8 +556,10 @@ class _FacultyProposalsState extends State<FacultyProposals> {
             Padding(
               padding: const EdgeInsets.all(3.0),
               child: FlatButton(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                shape: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.lightGreen.shade500, width: 1.0),
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                ),
                 color: Colors.lightGreen.shade400,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment
@@ -516,9 +568,9 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                     Text(
                       'Add new Proposal',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                        //fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.left,
                     ),
@@ -528,7 +580,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                   ],
                 ),
                 onPressed: () async {
-                  await post(Uri.parse("http://pesbuic.herokuapp.com/api/v1/proposal/"),
+                  await post(Uri.parse("http://$server/api/v1/proposal/"),
                       headers: <String, String>{
                         'Content-Type': 'application/json; charset=UTF-8',
                       },
@@ -546,8 +598,10 @@ class _FacultyProposalsState extends State<FacultyProposals> {
             Padding(
               padding: const EdgeInsets.all(3.0),
               child: FlatButton(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                shape: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.lightGreen.shade500, width: 1.0),
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                ),
                 color: Colors.lightGreen.shade400,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment
@@ -556,9 +610,9 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                     Text(
                       'Accept',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                        //fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.left,
                     ),
@@ -568,7 +622,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
                   ],
                 ),
                 onPressed: () async {
-                  await put(Uri.parse("http://pesbuic.herokuapp.com/api/v1/projects/$projectId"),
+                  await put(Uri.parse("http://$server/api/v1/projects/$projectId"),
                     headers: <String, String>{
                       'Content-Type': 'application/json; charset=UTF-8',
                     },
@@ -585,7 +639,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
       }
     }
 
-    Widget leftSideMenu()
+    /*Widget leftSideMenu()
     {
       if(!student){
         return Center(
@@ -647,7 +701,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
       else {
         return const SizedBox.shrink();
       }
-    }
+    }*/
 
     String name = "error";
     if(user != null) {
@@ -657,7 +711,7 @@ class _FacultyProposalsState extends State<FacultyProposals> {
         future: getAllCourses(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if(snapshot.connectionState == ConnectionState.done) {
-            return ScreenElements.screenLayout(context: context, name: name, leftSide: leftSideMenu(), topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: const SizedBox.shrink(), popScope: true);
+            return ScreenElements.screenLayout(context: context, name: name, type: student ? "student": "faculty", topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: const SizedBox.shrink(), popScope: true);
           }
           else {
             return const LoadingPage();

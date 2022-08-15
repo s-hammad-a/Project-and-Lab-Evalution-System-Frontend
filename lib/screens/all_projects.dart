@@ -15,6 +15,9 @@ class AllProjects extends StatefulWidget {
 }
 
 class _AllProjectsState extends State<AllProjects> {
+  //String server = "localhost:4000";
+  //String server = "pesbuic.herokuapp.com";
+  String server = "projectandlabevaluation.herokuapp.com";
   List<Map> marks = <Map>[];
   @override
   Widget build(BuildContext context) {
@@ -45,10 +48,11 @@ class _AllProjectsState extends State<AllProjects> {
     Future<void> getAllCourses() async {
       List<String> arr =  user!.email!.split("@");
       String id = arr.first;
+      //id = "aleemahmed.buic";
       id = "asohail.buic";
       //id = 'adeel';
       //id ='joddat';
-      Response response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/group/project/$id/$course/$semester"));
+      Response response = await get(Uri.parse("http://$server/api/v1/group/project/$id/$course/$semester"));
       String res = response.body.substring(1,response.body.length-2);
       List<String> allData = res.split('},');
       for (String element in allData) {
@@ -59,7 +63,8 @@ class _AllProjectsState extends State<AllProjects> {
     Future<void> getMarks(int projectId) async {
       marks = <Map>[];
       for(int i = 0; i < ids.length; i++) {
-        Response response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/group/${ids[i]}/$projectId"));
+        Response response = await get(Uri.parse("http://$server/api/v1/group/${ids[i]}/$projectId"));
+        print(response.body);
         String res = response.body.substring(1,response.body.length-1);
         //print("dsfsdfdsf$element}");
         marks.add(jsonDecode(res));
@@ -89,7 +94,7 @@ class _AllProjectsState extends State<AllProjects> {
                   child: Container(
                       decoration: BoxDecoration(
                           color: color,
-                          border: Border.all(color: Colors.black87),
+                          border: Border.all(color: projectStatus[index] ? Colors.lightGreen.shade400 : Colors.red.shade400),
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: const [
                             BoxShadow(
@@ -219,7 +224,7 @@ class _AllProjectsState extends State<AllProjects> {
                                 style: const TextStyle(
                                   fontSize: 20,
                                   color: Colors.black,
-                                  fontWeight: FontWeight.bold,
+                                  //fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -292,18 +297,21 @@ class _AllProjectsState extends State<AllProjects> {
     }
 
     Widget topStrip() {
-      return const Text(
-        ' Projects',
-        style: TextStyle(
-          fontSize: 30,
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
+      return const Padding(
+        padding: EdgeInsets.all(5.0),
+        child: Text(
+          ' Projects',
+          style: TextStyle(
+            fontSize: 25,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.left,
         ),
-        textAlign: TextAlign.left,
       );
     }
 
-    Widget leftSideMenu()
+    /*Widget leftSideMenu()
     {
       return Center(
         child:
@@ -360,12 +368,12 @@ class _AllProjectsState extends State<AllProjects> {
           ),
         ]),
       );
-    }
+    }*/
 
     String name = "error";
     if(user != null) {
       name = user.displayName!;
-      return ScreenElements.screenLayout(context: context, name: name, leftSide: leftSideMenu(), topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: const SizedBox.shrink(), popScope: true);
+      return ScreenElements.screenLayout(context: context, name: name, type: "faculty", topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: const SizedBox.shrink(), popScope: true);
     }
     else
     {
@@ -556,8 +564,9 @@ class _AllProjectsState extends State<AllProjects> {
                 child: AlertDialog(
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30.0))),
-                  backgroundColor: Colors.grey[600],
+                  backgroundColor: Colors.grey.shade300,
                   title: TabBar(
+                    indicatorColor: Colors.grey.shade900,
                     tabs: tabs(names),
                   ),
                   content: SizedBox(
@@ -633,17 +642,16 @@ class _AllProjectsState extends State<AllProjects> {
                           alignment: Alignment.centerRight,
                           child: FlatButton(
                             minWidth: 120,
-                            color: Colors.deepPurple.shade700,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                            color: Colors.grey.shade400,
+                            shape: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black, width: 1.0),
+                            ),
                             onPressed: () async {
-                              print(projectID);
                               int j = 0;
                               for(int i = 0; i<list.length; i = i+4) {
-                                print(ids[j]);
                                 await put(
                                     Uri.parse(
-                                        "http://pesbuic.herokuapp.com/api/v1/group/update/${ids[j++]}/$projectID"),
+                                        "http://$server/api/v1/group/update/${ids[j++]}/$projectID"),
                                     headers: <String, String>{
                                       'Content-Type':
                                       'application/json; charset=UTF-8',

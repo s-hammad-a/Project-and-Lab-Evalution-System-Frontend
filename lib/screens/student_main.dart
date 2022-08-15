@@ -17,7 +17,10 @@ class StudentMain extends StatefulWidget {
 }
 
 class _StudentMainState extends State<StudentMain> {
-  String dropdownValue = 'Fall 2021';
+  //String server = "localhost:5000";
+  //String server = "pesbuic.herokuapp.com";
+  String server = "projectandlabevaluation.herokuapp.com";
+  String dropdownValue = 'Spring 2022';
   List<Map> marks = <Map>[];
   @override
   Widget build(BuildContext context) {
@@ -62,20 +65,20 @@ class _StudentMainState extends State<StudentMain> {
       courses = <Map>[];
       faculty = <Map>[];
       student = <Map>[];
-      Response response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/faculty/"));
+      Response response = await get(Uri.parse("http://$server/api/v1/faculty/"));
       String res = response.body.substring(1,response.body.length-2);
       List<String> allData = res.split('},');
       for (String element in allData) {
         faculty.add(jsonDecode("$element}"));
       }
-      response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/courses/"));
+      response = await get(Uri.parse("http://$server/api/v1/courses/"));
       res = response.body.substring(1,response.body.length-2);
       allData = res.split('},');
       //print(allData);
       for (String element in allData) {
         courses.add(jsonDecode("$element}"));
       }
-      response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/students/"));
+      response = await get(Uri.parse("http://$server/api/v1/students/"));
       res = response.body.substring(1,response.body.length-2);
       allData = res.split('},');
       //print(allData);
@@ -83,21 +86,21 @@ class _StudentMainState extends State<StudentMain> {
         student.add(jsonDecode("$element}"));
       }
       Map map = {
-        'course_name': "Select A Course",
+        'course_name': "Select Course",
       };
       courses.add(map);
       map = {
-        'faculty_name': "Select A Faculty",
+        'faculty_name': "Select Faculty",
       };
       faculty.add(map);
       map = {
-        'student_id': "Select A Student",
+        'student_id': "Select Student",
       };
       student.add(map);
       List<String> arr =  user!.email!.split("@");
       String id = arr.first;
-      //id = "01-131192-002";
-      response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/fsc/student/$id"));
+      //id = "01-131192-032";
+      response = await get(Uri.parse("http://$server/api/v1/fsc/student/$id"));
       res = response.body.substring(1,response.body.length-2);
       List<String> temp = res.split('},');
       List<Map> semesters = <Map>[];
@@ -108,10 +111,10 @@ class _StudentMainState extends State<StudentMain> {
         allSemesters.add(semesters[i]['semester']);
         i++;
       }
-      if(!allSemesters.contains('Fall 2021')) {
-        allSemesters.add('Fall 2021');
+      if(!allSemesters.contains('Spring 2022')) {
+        allSemesters.add('Spring 2022');
       }
-      response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/projects/data/$id/$dropdownValue"));
+      response = await get(Uri.parse("http://$server/api/v1/projects/data/$id/$dropdownValue"));
       res = response.body.substring(1,response.body.length-2);
       allData = res.split('},');
       for (String element in allData) {
@@ -123,11 +126,103 @@ class _StudentMainState extends State<StudentMain> {
     Future<void> getMarks(int projectId) async {
       marks = <Map>[];
       for(int i = 0; i < ids.length; i++) {
-        Response response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/group/${ids[i]}/$projectId"));
+        Response response = await get(Uri.parse("http://$server/api/v1/group/${ids[i]}/$projectId"));
+        print(response.body);
         String res = response.body.substring(1,response.body.length-1);
         marks.add(jsonDecode(res));
       }
     }
+
+    /*Widget leftSideMenu()
+    {
+      return Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              FlatButton(
+                height: 50,
+                hoverColor: Colors.black54,
+                shape: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white, width: 1.0),
+                ),
+                //shape: const OutlineInputBorder(
+                //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+                onPressed:() {
+                  //Navigator.pushNamedAndRemoveUntil(context, 'facultyMain', (route) => false);
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/facultyMain');
+                } ,
+                child:const SizedBox(
+                  width: 400,
+                  child: Text( 'Courses',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ),
+              FlatButton(
+                height: 50,
+                hoverColor: Colors.black54,
+                shape: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white, width: 1.0),
+                ),
+                //shape: const OutlineInputBorder(
+                //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+                onPressed:() {
+                  //Navigator.pushNamedAndRemoveUntil(context, 'facultyMain', (route) => false);
+                  Navigator.pop(context);
+                  Navigator
+                      .pushNamed(
+                      context,
+                      '/allProject', arguments: {
+                    "courseID": 'ESC 498',
+                    "semester": 'Spring 2022',
+                  });
+                },
+                child: const SizedBox(
+                  width: 400,
+                  child: Text('Final Year Project',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,)
+                  ),
+                ),
+              ),
+              FlatButton(
+                height: 50,
+                hoverColor: Colors.black54,
+                shape: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white, width: 1.0),
+                ),
+                //shape: const OutlineInputBorder(
+                //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+                onPressed:() {
+                  //Navigator.pushNamedAndRemoveUntil(context, 'facultyMain', (route) => false);
+                  Navigator.pop(context);
+                  Navigator
+                      .pushNamed(
+                      context,
+                      '/allProject', arguments: {
+                    "courseID": 'ESC 498',
+                    "semester": 'Spring 2022',
+                  });
+                },
+                child: const SizedBox(
+                  width: 400,
+                  child: Text('Go to LES',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,)
+                  ),
+                ),
+              ),
+            ]
+        ),
+      );
+    }*/
 
     Widget listViewBuilder() {
       return ListView.builder(
@@ -135,7 +230,7 @@ class _StudentMainState extends State<StudentMain> {
           itemBuilder: (context, index) {
             String status;
             Color color;
-            if(!projectStatus[index]) {
+            if(projectStatus[index]) {
               status = "Approved";
               color = Colors.lightGreen.shade300;
             }
@@ -148,7 +243,7 @@ class _StudentMainState extends State<StudentMain> {
               child: Container(
                   decoration: BoxDecoration(
                       color: color,
-                      border: Border.all(color: Colors.black87),
+                      border: Border.all(color: projectStatus[index] ? Colors.lightGreen.shade400 : Colors.red.shade400),
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: const [
                         BoxShadow(
@@ -200,7 +295,7 @@ class _StudentMainState extends State<StudentMain> {
                                       style: const TextStyle(
                                         fontSize: 20,
                                         color: Colors.black87,
-                                        fontWeight: FontWeight.bold,
+                                        //fontWeight: FontWeight.bold,
                                       ),
                                       textAlign: TextAlign.left,
                                     ),
@@ -214,7 +309,7 @@ class _StudentMainState extends State<StudentMain> {
                                         style: const TextStyle(
                                           fontSize: 20,
                                           color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
+                                          //fontWeight: FontWeight.bold,
                                         ),
                                         textAlign: TextAlign.left,
                                       ),
@@ -230,9 +325,9 @@ class _StudentMainState extends State<StudentMain> {
                                             return Text(
                                               '${data[index2]['student_name']}',
                                               style: const TextStyle(
-                                                fontSize: 13,
+                                                fontSize: 15,
                                                 color: Colors.black87,
-                                                fontWeight: FontWeight.bold,
+                                                //fontWeight: FontWeight.bold,
                                               ),
                                               textAlign: TextAlign.center,
                                             );
@@ -261,8 +356,8 @@ class _StudentMainState extends State<StudentMain> {
                                           Text(
                                             'Proposals',
                                             style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                              //fontWeight: FontWeight.bold,
                                               color: Colors.black87,
                                             ),
                                             textAlign: TextAlign.left,
@@ -293,7 +388,7 @@ class _StudentMainState extends State<StudentMain> {
                             style: const TextStyle(
                               fontSize: 20,
                               color: Colors.black87,
-                              fontWeight: FontWeight.bold,
+                              //fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -387,14 +482,17 @@ class _StudentMainState extends State<StudentMain> {
           SizedBox(
             height: height - 40,
             width: 300,
-            child: const Text(
-              ' Projects',
-              style: TextStyle(
-                fontSize: 30,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+            child: const Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Text(
+                ' Projects',
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.left,
               ),
-              textAlign: TextAlign.left,
             ),
           ),
           const Expanded(
@@ -405,8 +503,10 @@ class _StudentMainState extends State<StudentMain> {
             child: Padding(
               padding: const EdgeInsets.all(3.0),
               child: FlatButton(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                shape: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.lightGreen.shade600, width: 1.0),
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                ),
                 color: Colors.lightGreen.shade400,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment
@@ -417,8 +517,7 @@ class _StudentMainState extends State<StudentMain> {
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.black,
-                        fontWeight: FontWeight
-                            .bold,
+                        //fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.right,
                     ),
@@ -443,44 +542,56 @@ class _StudentMainState extends State<StudentMain> {
       return Container(
         decoration: BoxDecoration(
           color: Colors.grey.shade200,
-          border: Border.all(color: Colors.grey.shade900),
+          border: Border.all(color: Colors.grey.shade500),
           borderRadius: BorderRadius.circular(10),
         ),
         height: 40,
-        width: 360,
+        width: 220,
         child: Padding(
-          padding: const EdgeInsets.only(top: 3.0),
-          child: Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              height: 40,
-              width: 350,
-              child: DropdownButton<String>(
-                value: dropdownValue,
-                icon: const Icon(Icons.arrow_downward, color: Colors.black, size: 30.0,),
-                elevation: 16,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                ),
-                underline: Container(
-                  height: 2,
-                  color: Colors.black,
-                ),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    dropdownValue = newValue!;
-                  });
-                },
-                items: allSemesters
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+          padding: const EdgeInsets.only(left: 5, right: 5),
+          child: SizedBox(
+            height: 40,
+            width: 200,
+            child: DropdownButton2<String>(
+              buttonDecoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(5),
               ),
+              dropdownDecoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              dropdownWidth: 220,
+              value: dropdownValue,
+              icon: Expanded(
+                child: Row(
+                  children: const [
+                    Expanded(child: SizedBox.shrink()),
+                    Icon(Icons.keyboard_arrow_down, color: Colors.black, size: 30.0,),
+                  ],
+                ),
+              ),
+              style: const TextStyle(
+                color: Colors.black,
+                //fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+              ),
+              underline: Container(
+                height: 1,
+                color: Colors.black,
+              ),
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                });
+              },
+              items: allSemesters
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
           ),
         ),
@@ -494,9 +605,12 @@ class _StudentMainState extends State<StudentMain> {
         future: getAllCourses(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if(snapshot.connectionState == ConnectionState.done) {
-            return ScreenElements.screenLayout(context: context, name: name, leftSide: const SizedBox.expand(), topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: dropDown(), popScope: false);
+            return ScreenElements.screenLayout(context: context, name: name, type: "student", topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: dropDown(), popScope: false);
           }
           else {
+            /*return const Center(
+              child: CircularProgressIndicator(),
+            );*/
             return const LoadingPage();
           }
         },
@@ -532,6 +646,152 @@ class _StudentMainState extends State<StudentMain> {
   }
 
   List<Widget> tabBarView (List<String> names)
+  {
+    List<Widget> widget = <Widget>[];
+    int num = names.length;
+    List<TextEditingController> list = <TextEditingController>[];
+    for(int i = 0; i< num; i++) {
+      list.add(TextEditingController(text: marks[i]['implementation'] != null ? marks[i]['implementation'].toString() : ''));
+      list.add(TextEditingController(text: marks[i]['demo'] != null ? marks[i]['demo'].toString() : ''));
+      list.add(TextEditingController(text: marks[i]['knowledge'] != null ? marks[i]['knowledge'].toString() : ''));
+      list.add(TextEditingController(text: marks[i]['report'] != null ? marks[i]['report'].toString() : ''));
+    }
+    int j = 0;
+    for(int i = 0; i<names.length; i++) {
+      Widget wid = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                width: 150,
+                child: Text(
+                  'Implementation',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10,),
+              SizedBox(
+                height: 50,
+                width: 70,
+                child: TextFormField(
+                  enabled: false,
+                  onEditingComplete: () {
+                    marks[i]['implementation'] = int.parse(list[j].text);
+                  },
+                  controller: list[j++],
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                width: 150,
+                child: Text(
+                  'Demo',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10,),
+              SizedBox(
+                height: 50,
+                width: 70,
+                child: TextFormField(
+                  enabled: false,
+                  onEditingComplete: () {
+                    marks[i]['demo'] = int.parse(list[j].text);
+                  },
+                  controller: list[j++],
+                  keyboardType: TextInputType.number,
+
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                width: 150,
+                child: Text(
+                  'Knowledge',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10,),
+              SizedBox(
+                height: 50,
+                width: 70,
+                child: TextFormField(
+                  enabled: false,
+                  onEditingComplete: () {
+                    marks[i]['knowledge'] = int.parse(list[j].text);
+                  },
+                  controller: list[j++],
+                  keyboardType: TextInputType.number,
+
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                width: 150,
+                child: Text(
+                  'Report',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10,),
+              SizedBox(
+                height: 50,
+                width: 70,
+                child: TextFormField(
+                  enabled: false,
+                  onEditingComplete: () {
+                    marks[i]['report'] = int.parse(list[j].text);
+                  },
+                  controller: list[j++],
+                  keyboardType: TextInputType.number,
+
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+      widget.add(wid);
+    }
+    return widget;
+  }
+
+  /*List<Widget> tabBarView (List<String> names)
   {
     List<Widget> widget = <Widget>[];
     for(int i = 0; i<names.length; i++) {
@@ -642,7 +902,7 @@ class _StudentMainState extends State<StudentMain> {
       widget.add(wid);
     }
     return widget;
-  }
+  }*/
 
   Future<void> showAlert(BuildContext context, List<String> names, List<String> ids) async {
     showDialog(
@@ -652,8 +912,13 @@ class _StudentMainState extends State<StudentMain> {
               return DefaultTabController(
                 length: ids.length,
                 child: AlertDialog(
-                  backgroundColor: Colors.grey[600],
+                  shape: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.shade400, width: 1.0),
+                    borderRadius: const BorderRadius.all(Radius.circular(30.0)),
+                  ),
+                  backgroundColor: Colors.grey.shade300,
                   title: TabBar(
+                    indicatorColor: Colors.grey.shade900,
                     tabs: tabs(names),
                   ),
                   content: SizedBox(
@@ -674,8 +939,9 @@ class _StudentMainState extends State<StudentMain> {
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: FlatButton(
-                              shape: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black87, width: 1.0)),
+                              color: Colors.grey.shade400,
+                              shape: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey.shade500, width: 1.0)),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
@@ -700,28 +966,28 @@ class _StudentMainState extends State<StudentMain> {
   }
   Future<void> addNewProject(BuildContext context, List<Map> faculty, List<Map> courses, List<Map> student) async {
     TextEditingController ctr = TextEditingController();
-    String studentValue1 = "Select A Student";
-    String studentValue2 = "Select A Student";
-    String studentValue3 = "Select A Student";
-    String courseValue = "Select A Course";
-    String facultyValue = "Select A Faculty";
+    String studentValue1 = "Select Student";
+    String studentValue2 = "Select Student";
+    String studentValue3 = "Select Student";
+    String courseValue = "Select Course";
+    String facultyValue = "Select Faculty";
     bool check = false;
     for(int i = 0; i< faculty.length; i++) {
-      if(faculty[i]['faculty_name'] == 'Select A Faculty'){
+      if(faculty[i]['faculty_name'] == 'Select Faculty'){
         check = true;
       }
     }
     if(!check) {
       Map map = {
-        'course_name': "Select A Course",
+        'course_name': "Select Course",
       };
       courses.add(map);
       map = {
-        'faculty_name': "Select A Faculty",
+        'faculty_name': "Select Faculty",
       };
       faculty.add(map);
       map = {
-        'student_id': "Select A Student",
+        'student_id': "Select Student",
       };
       student.add(map);
     }
@@ -730,15 +996,17 @@ class _StudentMainState extends State<StudentMain> {
         builder: (context) => StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                shape: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade400, width: 1.0),
+                  borderRadius: const BorderRadius.all(Radius.circular(30.0)),
+                ),
                 backgroundColor: Colors.grey.shade300,
                 content: Container(
                   padding: const EdgeInsets.fromLTRB(10, 25, 10, 10),
                   width: 700,
                   height: 400,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.grey.shade50,
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: const [
                         BoxShadow(
@@ -810,15 +1078,19 @@ class _StudentMainState extends State<StudentMain> {
                         width: 500,
                         child: Row(
                           children: [
-                            const Text(
-                              'Course:  ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                            const Padding(
+                              padding: const EdgeInsets.only(right:57.0),
+                              child:  Text(
+                                'Course:  ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
                             Container(
+                              width:350,
                               padding: const EdgeInsets.only(left: 3, right: 3),
                               color: Colors.grey.shade200,
                               child: DropdownButton2<String>(
@@ -831,7 +1103,14 @@ class _StudentMainState extends State<StudentMain> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 value: courseValue,
-                                icon: const Icon(Icons.arrow_downward, color: Colors.black, size: 30.0,),
+                                icon: Expanded(
+                                  child: Row(
+                                    children: const [
+                                      Expanded(child: SizedBox.shrink()),
+                                      Icon(Icons.keyboard_arrow_down, color: Colors.black, size: 30.0,),
+                                    ],
+                                  ),
+                                ),
                                 scrollbarAlwaysShow: true,
                                 scrollbarThickness: 8,
                                 style: const TextStyle(
@@ -866,15 +1145,19 @@ class _StudentMainState extends State<StudentMain> {
                         width: 500,
                         child: Row(
                           children: [
-                            const Text(
-                              'Faculty:  ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                            const Padding(
+                              padding: EdgeInsets.only(right:55.0),
+                              child:  Text(
+                                'Faculty:  ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
                             Container(
+                              width:350,
                               padding: const EdgeInsets.only(left: 3, right: 3),
                               color: Colors.grey.shade200,
                               child: DropdownButton2<String>(
@@ -889,13 +1172,21 @@ class _StudentMainState extends State<StudentMain> {
                                 scrollbarAlwaysShow: true,
                                 scrollbarThickness: 8,
                                 value: facultyValue,
-                                icon: const Icon(Icons.arrow_downward, color: Colors.black, size: 30.0,),
+                                icon: Expanded(
+                                  child: Row(
+                                    children: const [
+                                      Expanded(child: SizedBox.shrink()),
+                                      Icon(Icons.keyboard_arrow_down, color: Colors.black, size: 30.0,),
+                                    ],
+                                  ),
+                                ),
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20.0,
                                 ),
                                 underline: Container(
+
                                   height: 2,
                                   color: Colors.black,
                                 ),
@@ -922,15 +1213,19 @@ class _StudentMainState extends State<StudentMain> {
                         width: 500,
                         child: Row(
                           children: [
-                            const Text(
-                              'Student 1:  ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                            const Padding(
+                              padding:  EdgeInsets.only(right:33.0),
+                              child:  Text(
+                                'Student 1:  ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
                             Container(
+                              width:350,
                               padding: const EdgeInsets.only(left: 3, right: 3),
                               color: Colors.grey.shade200,
                               child: DropdownButton2<String>(
@@ -942,11 +1237,18 @@ class _StudentMainState extends State<StudentMain> {
                                   color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                dropdownWidth: 200,
+                                dropdownWidth: 350,
                                 scrollbarAlwaysShow: true,
                                 scrollbarThickness: 8,
                                 value: studentValue1,
-                                icon: const Icon(Icons.arrow_downward, color: Colors.black, size: 30.0,),
+                                icon: Expanded(
+                                  child: Row(
+                                    children: const [
+                                      Expanded(child: SizedBox.shrink()),
+                                      Icon(Icons.keyboard_arrow_down, color: Colors.black, size: 30.0,),
+                                    ],
+                                  ),
+                                ),
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -979,15 +1281,18 @@ class _StudentMainState extends State<StudentMain> {
                         width: 500,
                         child: Row(
                           children: [
-                            const Text(
-                              'Student 2:  ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                            const Padding(
+                              padding: EdgeInsets.only(right:33.0),
+                              child: Text(
+                                'Student 2:  ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
-                            Container(
+                            Container(width:350,
                               padding: const EdgeInsets.only(left: 3, right: 3),
                               color: Colors.grey.shade200,
                               child: DropdownButton2<String>(
@@ -999,11 +1304,18 @@ class _StudentMainState extends State<StudentMain> {
                                   color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                dropdownWidth: 200,
+                                dropdownWidth: 350,
                                 scrollbarAlwaysShow: true,
                                 scrollbarThickness: 8,
                                 value: studentValue2,
-                                icon: const Icon(Icons.arrow_downward, color: Colors.black, size: 30.0,),
+                                icon: Expanded(
+                                  child: Row(
+                                    children: const [
+                                      Expanded(child: SizedBox.shrink()),
+                                      Icon(Icons.keyboard_arrow_down, color: Colors.black, size: 30.0,),
+                                    ],
+                                  ),
+                                ),
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -1036,15 +1348,19 @@ class _StudentMainState extends State<StudentMain> {
                         width: 500,
                         child: Row(
                           children: [
-                            const Text(
-                              'Student 3:  ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                            const Padding(
+                              padding: EdgeInsets.only(right:33.0),
+                              child: Text(
+                                'Student 3:  ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
                             Container(
+                              width:350,
                               padding: const EdgeInsets.only(left: 3, right: 3),
                               color: Colors.grey.shade200,
                               child: DropdownButton2<String>(
@@ -1056,11 +1372,18 @@ class _StudentMainState extends State<StudentMain> {
                                   color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                dropdownWidth: 200,
+                                dropdownWidth: 350,
                                 scrollbarAlwaysShow: true,
                                 scrollbarThickness: 8,
                                 value: studentValue3,
-                                icon: const Icon(Icons.arrow_downward, color: Colors.black, size: 30.0,),
+                                icon: Expanded(
+                                  child: Row(
+                                    children: const [
+                                      Expanded(child: SizedBox.shrink()),
+                                      Icon(Icons.keyboard_arrow_down, color: Colors.black, size: 30.0,),
+                                    ],
+                                  ),
+                                ),
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -1098,7 +1421,7 @@ class _StudentMainState extends State<StudentMain> {
                             shape: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.black, width: 1.0)),
                             onPressed: () async {
-                              if(ctr.text.isNotEmpty && studentValue1 != 'Select A Student' && facultyValue != 'Select A Faculty' && courseValue != 'Select A Course') {
+                              if(ctr.text.isNotEmpty && studentValue1 != 'Select Student' && facultyValue != 'Select Faculty' && courseValue != 'Select Course') {
                                 String courseId = " ";
                                 String facultyId = " ";
                                 for(int i = 0; i<faculty.length; i++) {
@@ -1111,46 +1434,46 @@ class _StudentMainState extends State<StudentMain> {
                                     courseId = courses[i]['course_id'];
                                   }
                                 }
-                                Response response  = await post(Uri.parse("http://pesbuic.herokuapp.com/api/v1/projects/"),
+                                Response response  = await post(Uri.parse("http://$server/api/v1/projects/"),
                                     headers: <String, String>{
                                       'Content-Type': 'application/json; charset=UTF-8',
                                     },
                                     body: jsonEncode(<String, String>{
-                                      'course_id': courseId,
-                                      'faculty_id' : facultyId,
                                       'project_name': ctr.text,
-                                      'semester': 'Fall 2021',
+                                      'fsc_id': facultyId + studentValue1 + courseId + 'Spring 2022',
                                     })
                                 );
+                                print("Gsgsdg");
+                                print(response.body);
                                 Map map = jsonDecode(response.body);
                                 int id = map['project_id'];
-                                response = await post(Uri.parse("http://pesbuic.herokuapp.com/api/v1/group/"),
+                                /*response = await post(Uri.parse("http://$server/api/v1/group/"),
                                     headers: <String, String>{
                                       'Content-Type': 'application/json; charset=UTF-8',
                                     },
                                     body: jsonEncode(<String, dynamic>{
-                                      'student_id': studentValue1,
+                                      'fsc_id': facultyId + courseId + studentValue1 + 'Spring 2022',
                                       'project_id' : id,
                                     })
-                                );
-                                if(studentValue2 != 'Select A Student') {
-                                  response = await post(Uri.parse("http://pesbuic.herokuapp.com/api/v1/group/"),
+                                );*/
+                                if(studentValue2 != 'Select Student') {
+                                  response = await post(Uri.parse("http://$server/api/v1/group/"),
                                       headers: <String, String>{
                                         'Content-Type': 'application/json; charset=UTF-8',
                                       },
                                       body: jsonEncode(<String, dynamic>{
-                                        'student_id': studentValue2,
+                                        'fsc_id': facultyId + studentValue2 + courseId + 'Spring 2022',
                                         'project_id' : id,
                                       })
                                   );
                                 }
-                                if(studentValue3 != 'Select A Student') {
-                                  response = await post(Uri.parse("http://pesbuic.herokuapp.com/api/v1/group/"),
+                                if(studentValue3 != 'Select Student') {
+                                  response = await post(Uri.parse("http://$server/api/v1/group/"),
                                       headers: <String, String>{
                                         'Content-Type': 'application/json; charset=UTF-8',
                                       },
                                       body: jsonEncode(<String, dynamic>{
-                                        'student_id': studentValue3,
+                                        'fsc_id': facultyId + studentValue3 + courseId + 'Spring 2022',
                                         'project_id' : id,
                                       })
                                   );

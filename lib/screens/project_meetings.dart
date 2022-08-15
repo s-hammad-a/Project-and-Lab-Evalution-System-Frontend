@@ -18,6 +18,9 @@ class ProjectMeetings extends StatefulWidget {
 }
 
 class _ProjectMeetingsState extends State<ProjectMeetings> {
+  //String server = "localhost:5000";
+  //String server = "pesbuic.herokuapp.com";
+  String server = "projectandlabevaluation.herokuapp.com";
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context)!.settings.arguments;
@@ -43,7 +46,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
 
 
     Future<void> getAllCourses() async {
-      Response response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/projectFiles/files/$projectId"));
+      Response response = await get(Uri.parse("http://$server/api/v1/projectFiles/files/$projectId"));
       String res = response.body.substring(1,response.body.length-2);
       List<String> allData = res.split('},');
       //print(allData);
@@ -126,7 +129,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                 String? location = await sm.uploadFile();
                 await put(
                   Uri.parse(
-                      "http://pesbuic.herokuapp.com/api/v1/projectFiles/upload/$projectId/${index + 1}"),
+                      "http://$server/api/v1/projectFiles/upload/$projectId/${index + 1}"),
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },
@@ -140,7 +143,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
               else if(getText(index) == 'Delete') {
                 await put(
                   Uri.parse(
-                      "http://pesbuic.herokuapp.com/api/v1/projectFiles/upload/$projectId/${index + 1}"),
+                      "http://$server/api/v1/projectFiles/upload/$projectId/${index + 1}"),
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },
@@ -198,7 +201,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
               child: Container(
                   decoration: BoxDecoration(
                     color: color2,
-                    border: Border.all(color: Colors.black87),
+                    border: Border.all(color: color2 == Colors.lightGreen.shade300 ? Colors.lightGreen.shade300 : Colors.red.shade400),
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: const [
                       BoxShadow(
@@ -233,8 +236,8 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                                     fontSize: 20,
                                     color: Colors
                                         .black,
-                                    fontWeight: FontWeight
-                                        .bold,
+                                    // fontWeight: FontWeight
+                                    //     .bold,
                                   ),
                                   textAlign: TextAlign
                                       .left,
@@ -264,16 +267,16 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                                         Icons
                                             .download_rounded,
                                         color: Colors
-                                            .black,
+                                            .white,
+                                        size: 20,
                                       ),
                                       Text(
                                         'Project File',
                                         style: TextStyle(
                                           fontSize: 15,
-                                          fontWeight: FontWeight
-                                              .bold,
+                                          //fontWeight: FontWeight.bold,
                                           color: Colors
-                                              .black,
+                                              .white,
                                         ),
                                         textAlign: TextAlign
                                             .left,
@@ -325,8 +328,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                                               'Edit Log Report',
                                               style: TextStyle(
                                                 fontSize: 15,
-                                                fontWeight: FontWeight
-                                                    .bold,
+                                                fontWeight: FontWeight.bold,
                                                 color: Colors
                                                     .black,
                                               ),
@@ -405,8 +407,8 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                                         "${picked[index].day}/${picked[index].month}/${picked[index].year}",
                                         style: const TextStyle(
                                           fontSize: 15,
-                                          fontWeight: FontWeight
-                                              .bold,
+                                          // fontWeight: FontWeight
+                                          //     .bold,
                                           color: Colors
                                               .black,
                                         ),
@@ -418,7 +420,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                                   onPressed: () async{
                                     if(!student) {
                                       picked[index] = (await ScreenElements().selectDate(context, picked[index]))!;
-                                      await put(Uri.parse("http://pesbuic.herokuapp.com/api/v1/projectFiles/changedeadline/$projectId/${index+1}"),
+                                      await put(Uri.parse("http://$server/api/v1/projectFiles/changedeadline/$projectId/${index+1}"),
                                         headers: <String, String>{
                                           'Content-Type': 'application/json; charset=UTF-8',
                                         },
@@ -543,19 +545,23 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
     }
 
     Widget topStrip() {
-      if(student) {
-        return Text(
-          ' $projectName',
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 30,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.left,
+      /*if(student) {
+        return Row(
+          children: [
+            Text(
+              ' $projectName',
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 30,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ],
         );
       }
-      else {
+      else {*/
         return Row(
           children: [
             Expanded(
@@ -577,8 +583,10 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: FlatButton(
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                  shape: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.lightGreen.shade500, width: 1.0),
+                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                  ),
                   color: Colors.lightGreen.shade400,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment
@@ -589,8 +597,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.black,
-                          fontWeight: FontWeight
-                              .bold,
+                          //fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -600,7 +607,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                     ],
                   ),
                   onPressed: () async {
-                    await post(Uri.parse("http://pesbuic.herokuapp.com/api/v1/projectFiles/"),
+                    await post(Uri.parse("http://$server/api/v1/projectFiles/"),
                         headers: <String, String>{
                           'Content-Type': 'application/json; charset=UTF-8',
                         },
@@ -618,10 +625,10 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
             ),
           ],
         );
-      }
+      //}
     }
 
-    Widget leftSideMenu()
+    /*Widget leftSideMenu()
     {
       if(!student){
         return Center(
@@ -683,7 +690,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
       else {
         return const SizedBox.shrink();
       }
-    }
+    }*/
 
     String name = "error";
     checkUser();
@@ -693,7 +700,7 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
         future: getAllCourses(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if(snapshot.connectionState == ConnectionState.done) {
-            return ScreenElements.screenLayout(context: context, name: name, leftSide: leftSideMenu(), topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: const SizedBox.shrink(), popScope: true);
+            return ScreenElements.screenLayout(context: context, name: name, type: student ? "student": "faculty", topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: const SizedBox.shrink(), popScope: true);
           }
           else {
             return const LoadingPage();
@@ -720,9 +727,11 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
         builder: (context) => StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
-                backgroundColor: Colors.grey[600],
+                shape: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black87, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                ),
+                backgroundColor: Colors.grey.shade300,
                 title: SizedBox(
                   width: 1000,
                   height: 510,
@@ -798,13 +807,13 @@ class _ProjectMeetingsState extends State<ProjectMeetings> {
                             child: FlatButton(
                               shape: const OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black87, width: 1.0)),
-                              color: Colors.blue[800],
+                              color: Colors.grey.shade400,
                               onPressed: () async {
                                 try {
                                   achievements = textControl1.text;
                                   comments = textControl2.text;
                                   nextMeeting = textControl3.text;
-                                  await put(Uri.parse("http://pesbuic.herokuapp.com/api/v1/projectFiles/addinfo/$projectId/$fileId"),
+                                  await put(Uri.parse("http://$server/api/v1/projectFiles/addinfo/$projectId/$fileId"),
                                       headers: <String, String>{
                                         'Content-Type': 'application/json; charset=UTF-8',
                                       },

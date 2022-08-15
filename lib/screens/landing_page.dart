@@ -13,23 +13,23 @@ class LandingPage extends StatelessWidget {
         scrollbarOrientation: ScrollbarOrientation.bottom,
         controller: scr,
         isAlwaysShown: false,
-        thickness: 20,
+        thickness: 10,
         child: SingleChildScrollView(
           controller: scr,
           scrollDirection: Axis.horizontal,
           child: Container(
             height: 786,
             width: 1387,
-            color: Colors.grey.shade900,
+            color: Colors.grey.shade400,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(110, 25, 110, 25),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black54,
+                  color: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: const [
                     BoxShadow(
-                      color: Colors.black12,
+                      color: Colors.black,
                       offset: Offset(0,4),
                       blurRadius: 4
                     )
@@ -49,7 +49,7 @@ class LandingPage extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 50,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           const Text(
@@ -58,7 +58,7 @@ class LandingPage extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 50,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           const SizedBox(height: 30,),
@@ -70,19 +70,19 @@ class LandingPage extends StatelessWidget {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ),
                           ),
                           const SizedBox(
                             width: 400,
                             child: Text(
-                              'Made by Hassan Masood, Syed Hammad Ali and Shah Faisal.',
+                              'Made by Hassan Masood, Syed Hammad Ali and M.Mamoon Haider.',
                               textAlign: TextAlign.justify,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -94,6 +94,10 @@ class LandingPage extends StatelessWidget {
                                 height: 40,
                                 width: 300,
                                 child: FloatingActionButton.extended(
+                                  shape: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black87, width: 1.0),
+                                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                                  ),
                                   icon: Image.asset(
                                     'assets/MS logo.jpg',
                                     width: 20,
@@ -126,7 +130,7 @@ class LandingPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
-                          'assets/PES Logo 3.PNG',
+                          'assets/PES Logo.png',
                           width: 550,
                           height: 300,
                         ),

@@ -7,13 +7,13 @@ class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade700,
+      backgroundColor: Colors.grey.shade200,
         body: Center(
           child: LoadingAnimationWidget.discreteCircle(
             //leftDotColor: const Color(0xFF1A1A3F),
             //rightDotColor: const Color(0xFFEA3799),
-            size: 200,
-            color: Colors.white,
+            size: 50,
+            color: Colors.blue.shade300,
             secondRingColor:  Colors.green.shade900,
             thirdRingColor: Colors.orange
           ),

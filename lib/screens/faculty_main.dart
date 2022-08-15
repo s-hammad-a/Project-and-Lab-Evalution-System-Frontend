@@ -17,7 +17,10 @@ class FacultyMain extends StatefulWidget {
 }
 
 class _FacultyMainState extends State<FacultyMain> {
-  String dropdownValue = 'Fall 2021';
+  //String server = "localhost:5000";
+  //String server = "pesbuic.herokuapp.com";
+  String server = "projectandlabevaluation.herokuapp.com";
+  String dropdownValue = 'Spring 2022';
   String id = " ";
   @override
   Widget build(BuildContext context) {
@@ -30,11 +33,13 @@ class _FacultyMainState extends State<FacultyMain> {
       data = <Map>[];
       List<String> arr =  user!.email!.split("@");
       id = arr.first;
-      id = "joddat";
+      //id = "asohail.buic";
+      //id = "rafiahassan.buic";
       //id = "aleemahmed.buic";
       //id = 'adeel';
       List<Map> semesters = <Map>[];
-      Response response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/fsc/faculty/$id"));
+      Response response = await get(Uri.parse("http://$server/api/v1/fsc/faculty/$id"));
+      print(response.body);
       String res = response.body.substring(1,response.body.length-2);
       List<String> temp = res.split('},');
       int i = 0;
@@ -44,14 +49,18 @@ class _FacultyMainState extends State<FacultyMain> {
         allSemesters.add(semesters[i]['semester']);
         i++;
       }
-      if(!allSemesters.contains('Fall 2021')) {
-        allSemesters.add('Fall 2021');
+      if(!allSemesters.contains('Spring 2022')) {
+        allSemesters.add('Spring 2022');
       }
-      response = await get(Uri.parse("http://pesbuic.herokuapp.com/api/v1/fsc/courses/$id/$dropdownValue"));
+      response = await get(Uri.parse("http://$server/api/v1/fsc/courses/$id/$dropdownValue"));
       res = response.body.substring(1,response.body.length-2);
       List<String> allData = res.split('},');
       for (String element in allData) {
-        data.add(jsonDecode("$element}"));
+        Map map = jsonDecode("$element}");
+        if(!map['course_name'].contains('Lab')) {
+          data.add(map);
+        }
+        //data.add(jsonDecode("$element}"));
       }
     }
     Size size = MediaQuery.of(context).size;
@@ -75,12 +84,12 @@ class _FacultyMainState extends State<FacultyMain> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.grey.shade50,
-                  border: Border.all(color: Colors.grey.shade900),
+                  border: Border.all(color: Colors.grey.shade400),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: const [
                   BoxShadow(
                       color: Colors.black12,
-                      offset: Offset(0,10),
+                      offset: Offset(0,2),
                       blurRadius: 4
                   )]
                 ),
@@ -113,12 +122,11 @@ class _FacultyMainState extends State<FacultyMain> {
                                     .centerLeft,
                                 child: Text(
                                   data[index]['course_name'],
-                                  style: TextStyle(
-                                    fontSize: fontSize,
+                                  style: const TextStyle(
+                                    fontSize: 20,
                                     color: Colors
                                         .black,
-                                    fontWeight: FontWeight
-                                        .bold,
+                                    //fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign
                                       .left,
@@ -136,12 +144,11 @@ class _FacultyMainState extends State<FacultyMain> {
                                     .center,
                                 child: Text(
                                   data[index]['semester'],
-                                  style: TextStyle(
-                                    fontSize: fontSize,
+                                  style: const TextStyle(
+                                    fontSize: 20,
                                     color: Colors
                                         .black,
-                                    fontWeight: FontWeight
-                                        .bold,
+                                    //fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign
                                       .center,
@@ -156,7 +163,7 @@ class _FacultyMainState extends State<FacultyMain> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    /*SizedBox(
                       height: 50,
                       width: 250,
                       child: Padding(
@@ -164,6 +171,10 @@ class _FacultyMainState extends State<FacultyMain> {
                             .all(10),
                         child: FloatingActionButton
                             .extended(
+                          shape: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black38, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                          ),
                           backgroundColor: Colors
                               .blue[900],
                           label: Row(
@@ -196,7 +207,7 @@ class _FacultyMainState extends State<FacultyMain> {
                           },
                         ),
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),
@@ -244,7 +255,7 @@ class _FacultyMainState extends State<FacultyMain> {
           const Expanded(
               child: SizedBox
                   .shrink()),
-          SizedBox(
+          /*SizedBox(
             width: 250,
             child: Text(
               '  Project Reports',
@@ -257,7 +268,7 @@ class _FacultyMainState extends State<FacultyMain> {
               textAlign: TextAlign
                   .center,
             ),
-          ),
+          ),*/
         ],
       );
     }
@@ -270,24 +281,26 @@ class _FacultyMainState extends State<FacultyMain> {
             child: Text(
               ' Courses',
               style: TextStyle(
-                fontSize: fontSize + 10,
+                fontSize: fontSize + 5,
                 color: Colors.black,
-                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.left,
             ),
           ),
           const Expanded(
               child: SizedBox.shrink()),
-          Container(
+          /*Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
             ),
             padding: const EdgeInsets.all(3.0),
             width: 200,
             child: FlatButton(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30.0))),
+              shape: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightGreen.shade500, width: 1.0),
+                borderRadius: const BorderRadius.all(Radius.circular(30.0)),
+              ),
               color: Colors.lightGreen.shade400,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment
@@ -318,7 +331,7 @@ class _FacultyMainState extends State<FacultyMain> {
                 addNewCourse(context, studentNames, studentIds, courseId, courseName);
               },
             ),
-          ),
+          ),*/
         ],
       );
     }
@@ -327,29 +340,36 @@ class _FacultyMainState extends State<FacultyMain> {
       return Container(
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          border: Border.all(color: Colors.grey.shade900),
+          border: Border.all(color: Colors.grey.shade500),
           borderRadius: BorderRadius.circular(10),
         ),
         height: 40,
-        width: 360,
+        width: 200,
         child: Padding(
-          padding: const EdgeInsets.only(top: 3.0),
+          padding: const EdgeInsets.only(left: 5, right: 5),
           child: Align(
             alignment: Alignment.center,
             child: SizedBox(
               height: 40,
-              width: 350,
+              width: 200,
               child: DropdownButton<String>(
                 value: dropdownValue,
-                icon: const Icon(Icons.arrow_downward, color: Colors.black, size: 30.0,),
+                icon: Expanded(
+                  child: Row(
+                    children: const [
+                      Expanded(child: SizedBox.shrink()),
+                      Icon(Icons.keyboard_arrow_down, color: Colors.black, size: 30.0,),
+                    ],
+                  ),
+                ),
                 elevation: 16,
                 style: const TextStyle(
                   color: Colors.black,
-                  fontWeight: FontWeight.bold,
+                  //fontWeight: FontWeight.bold,
                   fontSize: 20.0,
                 ),
                 underline: Container(
-                  height: 2,
+                  height: 1,
                   color: Colors.black,
                 ),
                 onChanged: (String? newValue) {
@@ -371,7 +391,7 @@ class _FacultyMainState extends State<FacultyMain> {
       );
     }
 
-    Widget leftSideMenu()
+    /*Widget leftSideMenu()
     {
       return Center(
         child: Column(
@@ -408,7 +428,7 @@ class _FacultyMainState extends State<FacultyMain> {
                   borderSide: BorderSide(color: Colors.white, width: 1.0),
                 ),
                 //shape: const OutlineInputBorder(
-                    //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+                //borderSide: BorderSide(color: Colors.white, width: 1.0)),
                 onPressed:() {
                   //Navigator.pushNamedAndRemoveUntil(context, 'facultyMain', (route) => false);
                   Navigator.pop(context);
@@ -429,10 +449,38 @@ class _FacultyMainState extends State<FacultyMain> {
                   ),
                 ),
               ),
+              FlatButton(
+                height: 50,
+                hoverColor: Colors.black54,
+                shape: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white, width: 1.0),
+                ),
+                //shape: const OutlineInputBorder(
+                //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+                onPressed:() {
+                  //Navigator.pushNamedAndRemoveUntil(context, 'facultyMain', (route) => false);
+                  Navigator.pop(context);
+                  Navigator
+                      .pushNamed(
+                      context,
+                      '/allProject', arguments: {
+                    "courseID": 'ESC 498',
+                    "semester": 'Fall 2021',
+                  });
+                },
+                child: const SizedBox(
+                  width: 400,
+                  child: Text('Go to LES',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,)
+                  ),
+                ),
+              ),
             ]
         ),
       );
-    }
+    }*/
 
     String name = "Error";
     if(user != null) {
@@ -441,7 +489,7 @@ class _FacultyMainState extends State<FacultyMain> {
         future: getAllCourses(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if(snapshot.connectionState == ConnectionState.done) {
-            return ScreenElements.screenLayout(context: context, name: name, leftSide: leftSideMenu(), topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: dropDown(), popScope: false);
+            return ScreenElements.screenLayout(context: context, name: name, type: "faculty", topStrip: topStrip(), tableColumns: tableColumns(), listViewBuilder: listViewBuilder(), dropDown: dropDown(), popScope: false);
           }
           else {
             return const LoadingPage();
@@ -461,15 +509,17 @@ class _FacultyMainState extends State<FacultyMain> {
         builder: (context) => StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                shape: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black87, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                ),
                 backgroundColor: Colors.grey.shade300,
                 content: Container(
                   padding: const EdgeInsets.fromLTRB(10, 25, 10, 10),
                   width: 700,
                   height: 500,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.grey.shade50,
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: const [
                         BoxShadow(
@@ -504,7 +554,7 @@ class _FacultyMainState extends State<FacultyMain> {
                           style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 15,
                           ),
                         ),
                       ),
@@ -562,13 +612,15 @@ class _FacultyMainState extends State<FacultyMain> {
                           alignment: Alignment.centerRight,
                           child: FlatButton(
                             color: Colors.grey,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                            shape: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black87, width: 1.0),
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                            ),
                             onPressed: () async {
                               for(int i = 0; i < studentNames.length; i++) {
                                 await post(
                                     Uri.parse(
-                                        "http://pesbuic.herokuapp.com/api/v1/fsc/"),
+                                        "http://$server/api/v1/fsc/"),
                                     headers: <String, String>{
                                       'Content-Type':
                                       'application/json; charset=UTF-8',
@@ -577,7 +629,7 @@ class _FacultyMainState extends State<FacultyMain> {
                                       'student_id': studentIds[i],
                                       //'course_id': 'CSC 320',
                                       'course_id': courseId,
-                                      'semester': 'Fall 2021',
+                                      'semester': 'Spring 2022',
                                       'faculty_id': id,
                                     }));
                               }

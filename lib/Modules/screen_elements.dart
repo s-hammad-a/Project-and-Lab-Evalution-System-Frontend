@@ -37,7 +37,7 @@ class ScreenElements
             child: Text(
               'Project Evaluation System',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 30,
                 color: Colors.white,
               ),
               textAlign: TextAlign.center,
@@ -96,6 +96,135 @@ class ScreenElements
       );
   }
 
+  static Widget mobileLeftSideMenu(double height, Widget buttons) {
+    return
+      SizedBox(
+        height: height - 40,
+        width: 50,
+        child: Container(
+          color: const Color(-10395295),
+          child: buttons,
+        ),
+      );
+  }
+
+  static Widget studentMenu(BuildContext context)
+  {
+    return Center(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            FlatButton(
+              height: 50,
+              hoverColor: Colors.black54,
+              shape: const UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white, width: 1.0),
+              ),
+              //shape: const OutlineInputBorder(
+              //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+              onPressed:() {
+                //Navigator.pushNamedAndRemoveUntil(context, 'facultyMain', (route) => false);
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/studentMain');
+              } ,
+              child:const SizedBox(
+                width: 400,
+                child: Text( 'Courses',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ),
+          ]
+      ),
+    );
+  }
+  static Widget facultyMenu(BuildContext context)
+  {
+    return Center(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            FlatButton(
+              height: 50,
+              hoverColor: Colors.black54,
+              shape: const UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white, width: 1.0),
+              ),
+              //shape: const OutlineInputBorder(
+              //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+              onPressed:() {
+                //Navigator.pushNamedAndRemoveUntil(context, 'facultyMain', (route) => false);
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/facultyMain');
+              } ,
+              child:const SizedBox(
+                width: 400,
+                child: Text( 'Courses',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ),
+            FlatButton(
+              height: 50,
+              hoverColor: Colors.black54,
+              shape: const UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white, width: 1.0),
+              ),
+              //shape: const OutlineInputBorder(
+              //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+              onPressed:() {
+                //Navigator.pushNamedAndRemoveUntil(context, 'facultyMain', (route) => false);
+                Navigator.pop(context);
+                Navigator
+                    .pushNamed(
+                    context,
+                    '/allProject', arguments: {
+                  "courseID": 'ESC 498',
+                  "semester": 'Fall 2021',
+                });
+              },
+              child: const SizedBox(
+                width: 400,
+                child: Text('Final Year Project',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,)
+                ),
+              ),
+            ),
+            FlatButton(
+              height: 50,
+              hoverColor: Colors.black54,
+              shape: const UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white, width: 1.0),
+              ),
+              //shape: const OutlineInputBorder(
+              //borderSide: BorderSide(color: Colors.white, width: 1.0)),
+              onPressed:() {
+                Navigator.pushNamed(context, '/lesHome');
+              },
+              child: const SizedBox(
+                width: 400,
+                child: Text('Go to LES',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,)
+                ),
+              ),
+            ),
+          ]
+      ),
+    );
+  }
+
   static Widget rightMenuContainer(BuildContext context, Widget topStrip, Widget tableColumns, Widget listViewBuilder, Widget dropDown) {
     Size size = MediaQuery.of(context).size;
     double height = size.height;
@@ -124,7 +253,7 @@ class ScreenElements
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300,
-                  border: Border.all(color: Colors.grey.shade900),
+                  border: Border.all(color: Colors.grey.shade400),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 height: 40,
@@ -159,7 +288,7 @@ class ScreenElements
                           child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade300,
-                                border: Border.all(color: Colors.grey.shade900),
+                                border: Border.all(color: Colors.grey.shade400),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               height: 40,
@@ -185,8 +314,15 @@ class ScreenElements
     );
   }
 
-  static Widget screenLayout({required BuildContext context, required String name, required Widget leftSide, required Widget topStrip, required Widget tableColumns, required Widget listViewBuilder, required Widget dropDown, required bool popScope}) {
+  static Widget screenLayout({required BuildContext context, required String name, required String type, required Widget topStrip, required Widget tableColumns, required Widget listViewBuilder, required Widget dropDown, required bool popScope}) {
     Size size = MediaQuery.of(context).size;
+    Widget leftSide;
+    if(type == "student") {
+      leftSide = studentMenu(context);
+    }
+    else {
+      leftSide = facultyMenu(context);
+    }
     double height = size.height;
     double width = size.width;
     double getWidth()
@@ -205,7 +341,7 @@ class ScreenElements
           scrollbarOrientation: ScrollbarOrientation.bottom,
           controller: scr,
           isAlwaysShown: false,
-          thickness: 20,
+          thickness: 10,
           child: SingleChildScrollView(
             controller: scr,
             scrollDirection: Axis.horizontal,
